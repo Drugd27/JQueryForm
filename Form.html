@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+    <style>
+        label { display: block; margin-top: 10px; }
+        input { width: 250px; padding: 5px; }
+        .error { color: red; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <form class="cmxform" id="commentForm" method="get" action="Form.html" autocomplete="off">
+        <fieldset>
+            <legend>Comment Form</legend>
+            <p>
+                <label for="fname">Nazwa <span>(wymagany, przynajmniej 2 znaki)</span></label>
+                <input id="fname" name="name" minlength="2" type="text" required/>
+            </p>
+            <p>
+                <label for="email">E-Mail <span>(wymagany, nie będzie wyświetlany)</span></label>
+                <input id="email" name="email" type="email" required/>
+            </p>
+            <p>
+                <label for="pass">Hasło <span>(wymagane, przynajmniej 6 znaków)</span></label>
+                <input id="pass" name="pass" minlength="6" type="password" required/>
+            </p>
+            <p>
+                <label for="confirm_pass">Powtórz hasło</label>
+                <input id="confirm_pass" name="confirm_pass" type="password" required/>
+            </p>
+            <p>
+                <label for="age">Wiek <span>(wymagane, przynajmniej 18 lat)</span></label>
+                <input id="age" name="age" aria-valuemin="18" type="number" required/>
+            </p>
+            <p>
+                <input class="submit" type="submit" value="Potwierdź"/>
+            </p>
+        </fieldset>
+    </form>
+<script>
+    $(document).ready(function() {
+        $("#commentForm").validate({
+            rules: {
+                fname: {
+                    required: true,
+                    remote: {
+                        url: "users.json",
+                        type: "get",
+                        dataFilter: function (response) {
+                            let users = JSON.parse(response);
+                            let username = $("input[name='username']").val();
+                            return users.includes(username) ? false : true;
+                        }
+                    }
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                pass: {
+                    required: true,
+                    minlength: 6
+                },
+                confirm_pass: {
+                    required: true,
+                    equalTo: "#pass"
+                },
+                age: {
+                    required: true,
+                    min: 18
+                },
+            },
+            messages: {
+                fname: "Proszę podać swoją nazwę",
+                email: {
+                    required: "Proszę podać swój email",
+                    email: "Podany email nie jest prawidłowy",
+                },
+                pass: {
+                    required: "Proszę podać hasło",
+                    minlength: "Hasło musi mieć conajmniej 6 znaków",
+                },
+                confirm_pass: {
+                    required: "Proszę potwierdzić hasło",
+                    equalTo: "Hasła nie są takie same"
+                },
+                age: {
+                    required: "Proszę podać swój wiek",
+                    min: "Wiek musi wynosić co najmniej 18 lat"
+                },
+            },
+
+            submitHandler: function() {
+                alert("Dziękujemy za wypełnienie formularza! \n Twoje dane zostały sprzedane chińskiemu rządowi!! \n 荣耀归于中华人民共和国!!!");
+            }
+        });
+    });
+</script>
+</body>
+</html>
